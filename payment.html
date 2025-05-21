@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: #f8f8f8;
+      padding: 40px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 5px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .fawry-code {
+      font-weight: bold;
+      font-size: 18px;
+      color: #d10000;
+      margin: 10px 0;
+    }
+
+    .expiration {
+      font-size: 14px;
+      color: #666;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Choose Payment Method</h2>
+
+    <label for="payment-method">Payment Method</label>
+    <select id="payment-method" onchange="handlePaymentChange()">
+      <option value="">-- Select --</option>
+      <option value="credit">Credit Card</option>
+      <option value="fawry">Fawry</option>
+      <option value="instapay">InstaPay</option>
+    </select>
+
+  <!-- Credit Card Section -->
+<div id="credit-section" class="hidden">
+  <label>Name on Card</label>
+  <input type="text" id="card-name">
+
+  <label>Card Number</label>
+  <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX" maxlength="16">
+  <small id="card-number-error" style="color: red; display: none;">Only numbers allowed (16 max)</small>
+
+  <label>Expiry Date</label>
+  <input type="text" id="expiry-date" placeholder="MMYY" maxlength="4">
+  <small id="expiry-error" style="color: red; display: none;">Only numbers (4 digits)</small>
+
+  <label>CVV</label>
+  <input type="text" id="cvv" maxlength="3">
+</div>
+
+<script>
+  function allowOnlyNumbers(input, errorEl, maxLength) {
+    input.addEventListener('input', () => {
+      // Remove any non-numeric characters
+      input.value = input.value.replace(/\D/g, '');
+
+      // Truncate if over max length
+      if (input.value.length > maxLength) {
+        input.value = input.value.slice(0, maxLength);
+      }
+
+      // Show/hide error
+      errorEl.style.display = /^\d+$/.test(input.value) || input.value === '' ? 'none' : 'block';
+    });
+
+    input.addEventListener('keydown', (e) => {
+      // Allow: backspace, tab, delete, arrows
+      if (
+        ['Backspace', 'Tab', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(e.key)
+      ) return;
+
+      // Block non-numeric keys
+      if (!/[0-9]/.test(e.key)) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  const cardNumberInput = document.getElementById('card-number');
+  const cardNumberError = document.getElementById('card-number-error');
+  allowOnlyNumbers(cardNumberInput, cardNumberError, 16);
+
+  const expiryInput = document.getElementById('expiry-date');
+  const expiryError = document.getElementById('expiry-error');
+  allowOnlyNumbers(expiryInput, expiryError, 4);
+</script>
+
+
+
+    <!-- Fawry Section -->
+    <div id="fawry-section" class="hidden">
+      <p class="fawry-code" id="fawry-code"></p>
+      <p class="expiration" id="fawry-expiration"></p>
+    </div>
+
+    <!-- InstaPay Section -->
+    <!-- InstaPay Section -->
+<div id="instapay-section" class="hidden">
+  <p><strong>Send to this number via InstaPay:</strong></p>
+  <p style="font-size: 18px; color: #000000;">+20 123 456 7890</p>
+</div>
+
+
+    <button>Proceed to Pay</button>
+  </div>
+
+  <script>
+    function handlePaymentChange() {
+      const method = document.getElementById('payment-method').value;
+
+      // Hide all sections
+      document.getElementById('credit-section').classList.add('hidden');
+      document.getElementById('fawry-section').classList.add('hidden');
+      document.getElementById('instapay-section').classList.add('hidden');
+
+      if (method === 'credit') {
+        document.getElementById('credit-section').classList.remove('hidden');
+      } else if (method === 'fawry') {
+        document.getElementById('fawry-section').classList.remove('hidden');
+        generateFawryCode();
+      } else if (method === 'instapay') {
+        document.getElementById('instapay-section').classList.remove('hidden');
+      }
+    }
+
+    function generateFawryCode() {
+      const code = Math.floor(1000000000 + Math.random() * 9000000000);
+      const now = new Date();
+      now.setDate(now.getDate() + 3); // 3 days expiration
+      const expiration = now.toLocaleDateString();
+
+      document.getElementById('fawry-code').textContent = `Reference Code: ${code}`;
+    document.getElementById('fawry-expiration').textContent = `Expires on: ${expiration}`;
+
+    }
+  </script>
+</body>
+</html>
