@@ -1,9 +1,7 @@
 <?php
 session_start(); 
-require_once 'C:\wamp64\www\local-shop11\Models\connect.php';
-require_once 'C:\wamp64\www\local-shop11\Models\user.php';
-require_once 'C:\wamp64\www\local-shop11\Models\product.php';
-require_once 'session.php';
+require_once 'connect.php'; 
+
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=local_shop11', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -29,7 +27,7 @@ try {
                         header("Location: /admin/dashboard.php");
                         break;
                     case 'brand_owner':
-                        header("Location: /local-shop11/Views/Dbrandowner.php");
+                        header("Location: /Local-shop11/Views/Dbrandowner.php");
                         break;
                     case 'delivery':
                         header("Location: /delivery/dashboard.php");
